@@ -1,7 +1,10 @@
 package com.hendisantika.service;
 
+import com.hendisantika.entity.Employee;
 import com.hendisantika.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,5 +22,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
+    }
+
+    @Override
+    public Employee saveEmployee(Employee employee) {
+        Optional<Employee> savedEmployee = employeeRepository.findByEmail(employee.getEmail());
+        if (savedEmployee.isPresent()) {
+            throw new ResourceNotFoundException("Employee already exist with given email: " + employee.getEmail());
+        }
+        return employeeRepository.save(employee);
     }
 }

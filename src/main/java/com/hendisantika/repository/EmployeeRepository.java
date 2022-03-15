@@ -3,6 +3,8 @@ package com.hendisantika.repository;
 import com.hendisantika.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : spring-boot-unit-test-sample2
@@ -13,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 06.38
  */
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-
+    Optional<Employee> findByEmail(String email);
 }
