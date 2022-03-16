@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -49,9 +51,9 @@ class EmployeeControllerTest {
     public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
         // given - precondition or setup
         Employee employee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Uzumaki")
+                .lastName("Naruto")
+                .email("uzumaki_naruto@konohagakure.co.jp")
                 .build();
         given(employeeService.saveEmployee(any(Employee.class)))
                 .willAnswer((invocation) -> invocation.getArgument(0));
@@ -77,7 +79,7 @@ class EmployeeControllerTest {
     public void givenListOfEmployees_whenGetAllEmployees_thenReturnEmployeesList() throws Exception {
         // given - precondition or setup
         List<Employee> listOfEmployees = new ArrayList<>();
-        listOfEmployees.add(Employee.builder().firstName("Ramesh").lastName("Fadatare").email("ramesh@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("Uzumaki").lastName("Naruto").email("naruto@gmail.com").build());
         listOfEmployees.add(Employee.builder().firstName("Tony").lastName("Stark").email("tony@gmail.com").build());
         given(employeeService.getAllEmployees()).willReturn(listOfEmployees);
 
@@ -98,9 +100,9 @@ class EmployeeControllerTest {
         // given - precondition or setup
         long employeeId = 1L;
         Employee employee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Uchiha")
+                .lastName("Sasuke")
+                .email("sasuke@gmail.com")
                 .build();
         given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.of(employee));
 
@@ -122,9 +124,9 @@ class EmployeeControllerTest {
         // given - precondition or setup
         long employeeId = 1L;
         Employee employee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Haruno")
+                .lastName("Sakura")
+                .email("sakura@gmail.com")
                 .build();
         given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
 
@@ -142,15 +144,15 @@ class EmployeeControllerTest {
         // given - precondition or setup
         long employeeId = 1L;
         Employee savedEmployee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Hatake")
+                .lastName("kakashi")
+                .email("kakashi@gmail.com")
                 .build();
 
         Employee updatedEmployee = Employee.builder()
-                .firstName("Ram")
-                .lastName("Jadhav")
-                .email("ram@gmail.com")
+                .firstName("Sarutobi")
+                .lastName("Hiruzan")
+                .email("sarutobi@gmail.com")
                 .build();
         given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.of(savedEmployee));
         given(employeeService.updateEmployee(any(Employee.class)))
@@ -176,15 +178,15 @@ class EmployeeControllerTest {
         // given - precondition or setup
         long employeeId = 1L;
         Employee savedEmployee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Rock")
+                .lastName("lee")
+                .email("lee@gmail.com")
                 .build();
 
         Employee updatedEmployee = Employee.builder()
-                .firstName("Ram")
-                .lastName("Jadhav")
-                .email("ram@gmail.com")
+                .firstName("Hyuuga")
+                .lastName("Neji")
+                .email("neji@gmail.com")
                 .build();
         given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
         given(employeeService.updateEmployee(any(Employee.class)))
@@ -197,6 +199,21 @@ class EmployeeControllerTest {
 
         // then - verify the output
         response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    // JUnit test for delete employee REST API
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenReturn200() throws Exception {
+        // given - precondition or setup
+        long employeeId = 1L;
+        willDoNothing().given(employeeService).deleteEmployee(employeeId);
+
+        // when -  action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(delete("/api/employees/{id}", employeeId));
+
+        // then - verify the output
+        response.andExpect(status().isOk())
                 .andDo(print());
     }
 }
